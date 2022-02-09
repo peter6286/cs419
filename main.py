@@ -26,9 +26,9 @@ def insert(user,password):
     conn.commit()
     print("数据插入成功")
 
-def select():
-    #sql = "SELECT USER_NAME ,password from USER where USER_NAME = %s;"
-    cursor = c.execute("SELECT USER_NAME ,password from USER")
+def select(name1,name2):
+    cursor = c.execute("SELECT USER_NAME ,password from USER where USER_NAME = ? or USER_NAME = ? ;",[name1,name2] )
+    #cursor = c.execute("SELECT USER_NAME ,password from USER")
     for row in cursor:
         #print("ID = ", row[0])
         print("USER_NAME = ", row[0])
@@ -38,7 +38,7 @@ def select():
         print("数据操作成功")
         conn.commit()
 
-createtable()
-insert('peter','asdsf')
-select()
+#createtable()
+#insert('peter','asdsf')
+select('fingal','peter')
 conn.close()
