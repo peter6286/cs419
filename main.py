@@ -5,11 +5,24 @@ print ("数据库打开成功")
 
 def createtable():
     # print()
-    c = conn.cursor()
-    c.execute('''CREATE TABLE USER
-    (USER_NAME    TEXT  PRIMARY KEY   NOT NULL,
-    password      TEXT     NOT NULL,
-    domain        CHAR(50));''')
+    c0 = conn.cursor()
+    c1 = conn.cursor()
+    c2 = conn.cursor()
+
+    #c0.execute('''CREATE TABLE USER
+    #(USER_NAME    TEXT  PRIMARY KEY   NOT NULL,
+    #password      TEXT     NOT NULL,
+    #domain        CHAR(50));''')
+
+    #c1.execute('''CREATE TABLE OBJECTS
+    #    (objectname  TEXT NOT NULL,
+    #    type         TEXT NOT NULL  );''')
+
+    c2.execute('''CREATE TABLE ACCESS
+           (operationname  TEXT NOT NULL,
+            domainname  TEXT NOT NULL 
+            typename    TEXT NOT NULL);''')
+
     print("数据表创建成功")
     conn.commit()
 
@@ -59,6 +72,8 @@ def setDomain(name,domain):
         else:
             c.execute("UPDATE USER set domain = domain || ? where USER_NAME = ?", ["," + domain, name])
 
+    conn.commit()
+    return ("Success")
 
 
     #if domain == 'NULL':
@@ -66,8 +81,6 @@ def setDomain(name,domain):
     #if domain != 'NULL':
     #    c.execute("UPDATE USER set domain = domain || ? where USER_NAME = ?", [","+domain,name])
 
-    conn.commit()
-    return ("Success")
 
 
 
@@ -125,13 +138,65 @@ def DomainInfo(domain):
     #print(dict)
     return (dict[domain])
 
+def SetType(objectname,type):
+    c = conn.cursor()
+    if objectname == '' or type == '':
+        exit ("Arguemnt missing")
+    c.execute("INSERT INTO OBJECTS (objectname,type) \
+             VALUES (?,?)",[objectname,type])
+    conn.commit()
+    return ("Success")
 
-#createtable()
+def Typeinfo(country):
+    res = []
+    c = conn.cursor()
+    c1 = conn.cursor()
+    if country == '':
+        exit("Arguemnt missing")
+    cursor=c.execute("SELECT distinct objectname from OBJECTS where type = ?;",[country])
+    cursor1 = c1.execute("SELECT objectname from OBJECTS where type = ?;", [country])
+    if len(list(cursor1)) == 0:
+        exit("Error: No such object name")
+
+    for row in cursor:
+        res.append(row[0])
+    conn.commit()
+    return res
+
+
+def addaccess(operation,Dname,Tname):
+    c = conn.cursor()
+    if operation == '' or Dname == '' or Tname == '':
+        exit ("Arguemnt missing")
+    c.execute("INSERT INTO ACCESS (operationname,domainname,typename) \
+                 VALUES (?,?,?)", [operation, Dname,Tname])
+    conn.commit()
+    return ("Success")
+
+
+
+
+
+
+
+
+createtable()
 #insert('Daniel','CDEFG')
-#setDomain('Daniel','ablover')
-#select('fingal','peter')
-#print(authenticate('Daniel','CDEFG'))
-print(DomainInfo("lover"))
+#insert('peter','hjgk')
+#insert('chelsea','hjgk')
+#insert('liverpool','opte')
+#insert('Milan','lower')
+#setDomain('liverpool','PL')
+#setDomain('chelsea','PL')
+#setDomain('Milan','italy')
+#select('milan','chelsea')
+#print(authenticate('peter','CEFG'))
+#print(DomainInfo("PL"))
+#SetType('Minamino','Japan')
+#SetType('takumi','Japan')
+#SetType('Mane','Sengal')
+#SetType('Salah','Egypt')
+print(Typeinfo('Japan'))
 
 
 conn.close()
