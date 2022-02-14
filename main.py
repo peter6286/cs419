@@ -1,7 +1,21 @@
 import sqlite3
+import sys
 
 db = 'wo.db'
 
+CMD_INFO = """Usage:
+        portal AddUser <user> <password>
+        portal Authenticate <user> <password>
+        portal SetDomain <user> <domain>
+        portal DomainInfo <domain>
+        portal SetType <object> <type>
+        portal TypeInfo <type>
+        portal AddAccess <operation> <domain> <type>
+        portal CanAccess <operation> <user> <object>
+        portal Reset
+        portal Help
+        """
+'''
 def opendb(db):
     try:
         conn = sqlite3.connect('wo.db')
@@ -10,12 +24,15 @@ def opendb(db):
         conn = sqlite3.connect('wo.db')
 conn = sqlite3.connect('wo.db')
 print ("数据库打开成功")
+'''
 
+conn = sqlite3.connect('wo.db')
 def createtable():
     # print()
     c0 = conn.cursor()
     c1 = conn.cursor()
     c2 = conn.cursor()
+
 
     c0.execute('''CREATE TABLE IF NOT EXISTS USER
     (USER_NAME    TEXT  PRIMARY KEY   NOT NULL,
@@ -209,14 +226,11 @@ def canaccess(op,un,on):
 
     typelist = []
     for row in cursor2:
-        print("type = ", row[0])
+        #print("type = ", row[0])
         typelist.append(row[0])
 
-    print(domianlist)
-    print(typelist)
-
-
-    temp1 = []
+    #print(domianlist)
+    #print(typelist)
     for row in cursor0:
         print("domainname = ", str(row[0]))
         print("typename = ", str(row[1]))
@@ -231,34 +245,90 @@ def canaccess(op,un,on):
         #print("typename = ", row[1])
         #temp1.append([row[0],row[1]])
 
+def execute(args):
+    args_passed = len(args)
+
+    if args_passed < 2:
+        return CMD_INFO
+
+    base_cmd = args[1].lower()
+
+    if base_cmd == 'adduser':
+        if args_passed != 4:
+            return 'Usage: portal AddUser <user> <password>'
+
+        return insert(args[2], args[3])
+
+    if base_cmd == 'authenticate':
+        if args_passed != 4:
+            return 'Usage: portal Authenticate <user> <password>'
+
+        return authenticate(args[2], args[3])
+
+    if base_cmd == 'setdomain':
+        if args_passed != 4:
+            return 'Usage: portal SetDomain <user> <domain>'
+
+        return setDomain(args[2], args[3])
+
+    if base_cmd == 'domaininfo':
+        if args_passed != 3:
+            return 'Usage: portal DomainInfo <domain>'
+
+        return DomainInfo(args[2])
+
+    if base_cmd == 'settype':
+        if args_passed != 4:
+            return 'Usage: portal SetType <object> <type>'
+
+        return SetType(args[2], args[3])
+
+    if base_cmd == 'typeinfo':
+        if args_passed != 3:
+            return 'Usage: portal TypeInfo <type>'
+
+        return Typeinfo(args[2])
+
+    if base_cmd == 'addaccess':
+        if args_passed != 5:
+            return 'Usage: AddAccess <operation> <domain> <type>'
+
+        return addaccess(args[2], args[3], args[4])
+
+    if base_cmd == 'canaccess':
+        if args_passed != 5:
+            return 'Usage: CanAccess <operation> <user> <object>'
+
+        return canaccess(args[2], args[3], args[4])
+
+    '''
+        if base_cmd == 'reset':
+            return self.reset()
+
+        if base_cmd == 'help':
+            return Portal.CMD_INFO
+
+        # an invalid command was entered
+        return Portal.CMD_INFO
+
+        '''
 
 
 
+def main():  # pragma: no cover
+    if sys.version_info < (3, 0):
+        print('Please make sure you are using Python 3.')
+        return
+    createtable()
+    print(execute(sys.argv))
 
 
-#opendb('wo.db')
-#createtable()
-#insert('Daniel','CDEFG')
-#insert('peter','hjgk')
-#insert('chelsea','hjgk')
-#insert('liverpool','opte')
-#insert('Milan','lower')
-#setDomain('liverpool','PL')
-#setDomain('chelsea','PL')
-#setDomain('Milan','italy')
-#select('milan','chelsea')
-#print(authenticate('peter','CEFG'))
-#print(DomainInfo("PL"))
-#SetType('Minamino','Japan')
-#SetType('takumi','Japan')
-#SetType('Mane','Sengal')
-#SetType('Salah','Egypt')
-#print(Typeinfo('Japan'))
-#addaccess('allice','uk','france')
-#addaccess('rival','uk','germany')
-#addaccess('rival','usa','china')
-#print(canaccess('rival','france','usa'))
+if __name__ == '__main__':  # pragma: no cover
+    main()
 
-print(canaccess('watch','muggle','pornhub'))
+
+
+# print(canaccess('doing','muggle','football'))
+
 
 #conn.close()

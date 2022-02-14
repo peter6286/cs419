@@ -58,22 +58,22 @@ def setaccess():
     main.addaccess('read','lover','document')
 
 def checkaccess():
-    main.canaccess('watch','peter','pornhub')
+    print(main.canaccess('watch','peter','pornhub'))
+    print(main.canaccess('doing', 'muggle', 'football'))
 
 
-#create()
-print("-----------")
+
 #adduser()
 print("-----------")
-#secur()
+secur()
 print("-----------")
-#setdomain()
+setdomain()
 print("-----------")
 #doinfo()
 print("-----------")
 #print(main.canaccess('rival', 'france', 'usa'))
 settype()
 print("-----------")
-tyinfo()
+#tyinfo()
 setaccess()
 conn.close()
