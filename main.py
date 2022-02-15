@@ -1,34 +1,13 @@
+import os
 import sqlite3
 import sys
 
-db = 'wo.db'
-
-CMD_INFO = """Usage:
-        portal AddUser <user> <password>
-        portal Authenticate <user> <password>
-        portal SetDomain <user> <domain>
-        portal DomainInfo <domain>
-        portal SetType <object> <type>
-        portal TypeInfo <type>
-        portal AddAccess <operation> <domain> <type>
-        portal CanAccess <operation> <user> <object>
-        portal Reset
-        portal Help
-        """
-'''
-def opendb(db):
-    try:
-        conn = sqlite3.connect('wo.db')
-    except:
-
-        conn = sqlite3.connect('wo.db')
-conn = sqlite3.connect('wo.db')
-print ("数据库打开成功")
-'''
 
 conn = sqlite3.connect('wo.db')
+
 def createtable():
     # print()
+    #conn = sqlite3.connect('wo.db')
     c0 = conn.cursor()
     c1 = conn.cursor()
     c2 = conn.cursor()
@@ -48,22 +27,28 @@ def createtable():
             domainname  TEXT NOT NULL ,
             typename    TEXT NOT NULL);''')
 
-    print("数据表创建成功")
+    #print("数据表创建成功")
     conn.commit()
 
-def insert(user,password):
+def adduser(user,password):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
     list1 = [user,password,'NULL']
-    c.execute("INSERT INTO USER (USER_NAME,password,domain) \
-             VALUES (?,?,?)",list1)
+    try:
+        c.execute("INSERT INTO USER (USER_NAME,password,domain) \
+                        VALUES (?,?,?)",list1)
+    except sqlite3.IntegrityError as err:
+          return ("user name already exist")
 
     conn.commit()
-    print("数据插入成功")
+    #print("数据插入成功")
+    return ("Success in adding user")
 
 
 
 
 def authenticate(user,password):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
     c1 = conn.cursor()
     cursor = c.execute("SELECT USER_NAME, password, domain from USER where USER_NAME = ?;", [user])
@@ -76,17 +61,16 @@ def authenticate(user,password):
                 return("Error: Bad password")
             else:
                 conn.commit()
-                return("Success")
+                return("Success in authenticate")
 
 def setDomain(name,domain):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
     c1 = conn.cursor()
     #c = conn.cursor()
     cursor1 = c1.execute("SELECT USER_NAME, password, domain from USER where USER_NAME = ?;", [name])
     cursor = c.execute("SELECT distinct USER_NAME, password, domain from USER where USER_NAME = ?;", [name])
     #cursor1 = c.execute("SELECT USER_NAME, password, domain from USER where USER_NAME = ?;", [name])
-    if domain == '':
-        exit("Error: missing domain")
 
     if len(list(cursor1)) == 0:
         exit("Error: No such user")
@@ -98,22 +82,13 @@ def setDomain(name,domain):
             c.execute("UPDATE USER set domain = domain || ? where USER_NAME = ?", ["," + domain, name])
 
     conn.commit()
-    return ("Success")
-
-
-    #if domain == 'NULL':
-    #    c.execute("UPDATE USER set domain = ? where USER_NAME = ?", [domain, name])
-    #if domain != 'NULL':
-    #    c.execute("UPDATE USER set domain = domain || ? where USER_NAME = ?", [","+domain,name])
-
-
-
+    return ("Success in setting the domain")
 
 
 def select(name1,name2):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
     cursor = c.execute("SELECT USER_NAME ,password,domain from USER where USER_NAME = ? or USER_NAME = ? ;",[name1,name2] )
-    #cursor = c.execute("SELECT USER_NAME ,password from USER")
     for row in cursor:
         #print("ID = ", row[0])
         print("USER_NAME = ", row[0])
@@ -125,19 +100,12 @@ def select(name1,name2):
         conn.commit()
 
 def DomainInfo(domain):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
-    c1 = conn.cursor()
     dict = {}
-    #res = []
     if domain == '':
         return 'Error: missing domain'
     cursor = c.execute("SELECT distinct domain,USER_NAME from USER ")
-    cursor1 = c1.execute("SELECT domain,USER_NAME from USER ")
-
-    if len(list(cursor1)) == 0:
-        exit("Error: No such domain")
-
-
     for row in cursor:
         temp = str(row[0])      #domain
         list1 = (temp.split(",")) #domain
@@ -151,8 +119,14 @@ def DomainInfo(domain):
             else:
                 if temp1 not in dict[item]:
                     dict[item].append(temp1)
+
+    conn.commit()
+    if domain not in dict:
+        return ("NO such domain name")
+    else:
+        return (dict[domain])
     #print(dict['fucker'])
-    '''
+'''
     for row in cursor:
         temp = str(row[0])
         list1 = (temp.split(","))
@@ -164,29 +138,23 @@ def DomainInfo(domain):
                 res.append(item)
     print(res)
     dict1 = dict.fromkeys(res)
-    '''
-    if domain not in dict:
-        exit("NO such domian")
-    else :
-        return (dict[domain])
-    conn.commit()
-    #print(dict)
+'''
 
 def SetType(objectname,type):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
     if objectname == '' or type == '':
         exit ("Arguemnt missing")
     c.execute("INSERT INTO OBJECTS (objectname,type) \
              VALUES (?,?)",[objectname,type])
     conn.commit()
-    return ("Success")
+    return ("Success in setting type")
 
 def Typeinfo(country):
+    #conn = sqlite3.connect('wo.db')
     res = []
     c = conn.cursor()
     c1 = conn.cursor()
-    if country == '':
-        exit("Arguemnt missing")
     cursor=c.execute("SELECT distinct objectname from OBJECTS where type = ?;",[country])
     cursor1 = c1.execute("SELECT objectname from OBJECTS where type = ?;", [country])
     if len(list(cursor1)) == 0:
@@ -195,25 +163,24 @@ def Typeinfo(country):
     for row in cursor:
         res.append(row[0])
     conn.commit()
+
     return res
 
 
 def addaccess(operation,Dname,Tname):
+    #conn = sqlite3.connect('wo.db')
     c = conn.cursor()
-    if operation == '' or Dname == '' or Tname == '':
-        exit ("Arguemnt missing")
     c.execute("INSERT INTO ACCESS (operationname,domainname,typename) \
                  VALUES (?,?,?)", [operation, Dname,Tname])
     conn.commit()
-    return ("Success")
+    return ("Success in setting the access")
 
 
 def canaccess(op,un,on):
+    #conn = sqlite3.connect('wo.db')
     c0 = conn.cursor()
     c1 = conn.cursor()
     c2 = conn.cursor()
-    if op == '' or un == '' or on == '':
-        exit("Arguemnt missing")
 
     cursor0 = c0.execute("select distinct domainname,typename from ACCESS where operationname = ? ;",[op])
     cursor1 = c1.execute("select domain from USER where USER_NAME = ? ;",[un])
@@ -238,18 +205,17 @@ def canaccess(op,un,on):
         t2 = row[1]
         if (t1 in domianlist)&(t2 in typelist):
                 conn.commit()
-                return "can access"
+                return ("can access")
     conn.commit()
-    return "can not access"
-        #print("domainname = ", row[0])
-        #print("typename = ", row[1])
-        #temp1.append([row[0],row[1]])
+    return ("can not access")
+
 
 def execute(args):
+
     args_passed = len(args)
 
-    if args_passed < 2:
-        return CMD_INFO
+    #if args_passed < 2:
+    #    return CMD_INFO
 
     base_cmd = args[1].lower()
 
@@ -257,7 +223,7 @@ def execute(args):
         if args_passed != 4:
             return 'Usage: portal AddUser <user> <password>'
 
-        return insert(args[2], args[3])
+        return adduser(args[2], args[3])
 
     if base_cmd == 'authenticate':
         if args_passed != 4:
@@ -314,12 +280,12 @@ def execute(args):
         '''
 
 
-
 def main():  # pragma: no cover
     if sys.version_info < (3, 0):
         print('Please make sure you are using Python 3.')
         return
     createtable()
+
     print(execute(sys.argv))
 
 
@@ -330,5 +296,4 @@ if __name__ == '__main__':  # pragma: no cover
 
 # print(canaccess('doing','muggle','football'))
 
-
-#conn.close()
+conn.close()

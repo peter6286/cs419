@@ -8,12 +8,12 @@ def create():
 
 
 def adduser():
-    main.insert('peter','1234')
-    main.insert('muggle','1234')
-    main.insert('jack','1234')
-    main.insert('alex','5678')
-    main.insert('bob','dsaf')
-    main.insert('li','asd')
+    main.adduser('peter','1234')
+    main.adduser('muggle','1234')
+    main.adduser('jack','1234')
+    main.adduser('alex','5678')
+    main.adduser('bob','dsaf')
+    main.adduser('li','asd')
 
 def secur():
     print(main.authenticate('peter','1234'))
