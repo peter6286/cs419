@@ -77,6 +77,7 @@ def adduser(user,password):
             data_row = [user, password]
             csv_write.writerow(data_row)
     f.close()
+    return ("success in add")
 
 
 def authenticate(user,password):
@@ -117,7 +118,7 @@ def DomainInfo(domain):
                 if line[0] not in res:
                     res.append(line[0])
     f.close()
-    return res if len(res)!=0 else ("NO such Domain")
+    return res if len(res)!=0 else exit("NO such Domain")
 
 
 
@@ -140,7 +141,7 @@ def Typeinfo(type):
                 if line[0] not in res:
                     res.append(line[0])
     f.close()
-    return res if len(res) != 0 else ("NO such Type")
+    return res if len(res) != 0 else exit("NO such Type")
 
 
 
@@ -195,9 +196,9 @@ def canaccess(op,un,on):
     f1.close()
     f2.close()
     f3.close()
-    print(temp1)
-    print(temp2)
-    print(temp3)
+    #print(temp1)
+    #print(temp2)
+    #print(temp3)
     for item1,item2 in temp1:
         if (item1 in temp2) & (item2 in temp3):
             return ("success in access")
@@ -214,21 +215,21 @@ def execute(args):
 
         if base_cmd == 'adduser':
             if args_passed != 4:
-                return ' Input argument adduser user password'
+                exit(' Input argument adduser user password')
 
-            return adduser(args[2], args[3])
+            print(adduser(args[2], args[3]))
 
         elif base_cmd == 'authenticate':
             if args_passed != 4:
-                return 'Input argument Authenticate user password'
+                exit('Input argument Authenticate user password')
 
-            return authenticate(args[2], args[3])
+            print(authenticate(args[2], args[3]))
 
         elif base_cmd == 'setdomain':
             if args_passed != 4:
-                return 'Input argument SetDomain user domain'
+                exit('Input argument SetDomain user domain')
 
-            return setDomain(args[2], args[3])
+            print(setDomain(args[2], args[3]))
 
         elif base_cmd == 'domainfo':
             if args_passed != 3:
@@ -241,13 +242,13 @@ def execute(args):
 
         elif base_cmd == 'settype':
             if args_passed != 4:
-                return 'Input argument SetType object type'
+                exit('Input argument SetType object type')
 
-            return SetType(args[2], args[3])
+            print(SetType(args[2], args[3]))
 
         elif base_cmd == 'typeinfo':
             if args_passed != 3:
-                return 'Input argument TypeInfo type'
+                exit ('Input argument TypeInfo type')
 
             ans = Typeinfo(args[2])
             for item in ans:
@@ -257,18 +258,18 @@ def execute(args):
 
         elif base_cmd == 'addaccess':
             if args_passed != 5:
-                return 'Input argument operation domain type'
+                exit('Input argument - operation domain type')
 
-            return addaccess(args[2], args[3], args[4])
+            print(addaccess(args[2], args[3], args[4]))
 
         elif base_cmd == 'canaccess':
             if args_passed != 5:
-                return 'Input argument CanAccess operation user object'
+                print('Input argument CanAccess operation user object')
 
-            return canaccess(args[2], args[3], args[4])
+            print(canaccess(args[2], args[3], args[4]))
 
         else:
-            return "make sure the command is correct"
+            exit("make sure the command is correct")
 
 
 def main():
@@ -276,7 +277,7 @@ def main():
         print('Please make sure you are using Python 3.')
         return
     #createtable()
-    print(execute(sys.argv))
+    execute(sys.argv)
 
 
 if __name__ == '__main__':  # pragma: no cover
