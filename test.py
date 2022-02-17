@@ -1,79 +1,79 @@
 import sqlite3
-import main
+import auth
 
-conn = sqlite3.connect('wo.db')
+conn = sqlite3.connect('cs419.db')
 
 def create():
-    main.createtable()
+    auth.createtable()
 
 
 def adduser():
-    main.adduser('peter','1234')
-    main.adduser('muggle','1234')
-    main.adduser('jack','1234')
-    main.adduser('alex','5678')
-    main.adduser('bob','dsaf')
-    main.adduser('li','asd')
+    auth.adduser('peter', '1234')
+    auth.adduser('muggle', '1234')
+    auth.adduser('jack', '1234')
+    auth.adduser('alex', '5678')
+    auth.adduser('bob', 'dsaf')
+    auth.adduser('li', 'asd')
 
 def secur():
-    print(main.authenticate('peter','1234'))
-    print(main.authenticate('muggle','1234'))
-    print(main.authenticate('mu','1234'))
-    print(main.authenticate('bob','dfef'))
-    print(main.authenticate('li','asd'))
+    print(auth.authenticate('peter', '1234'))
+    print(auth.authenticate('muggle', '1234'))
+    print(auth.authenticate('mu', '1234'))
+    print(auth.authenticate('bob', 'dfef'))
+    print(auth.authenticate('li', 'asd'))
 
 def setdomain():
-    main.setDomain('muggle','fucker')
-    main.setDomain('muggle','lover')
-    main.setDomain('peter','fucker')
+    auth.setDomain('muggle', 'fucker')
+    auth.setDomain('muggle', 'lover')
+    auth.setDomain('peter', 'fucker')
     #main.select('muggle','peter')
     #main.setDomain('fingal','dwq')
     #main.setDomain('alex','lover')
-    main.setDomain('bob','lover')
-    main.setDomain('bob','lover')
+    auth.setDomain('bob', 'lover')
+    auth.setDomain('bob', 'lover')
 
 def doinfo():
-    print(main.DomainInfo('fucker'))
-    print(main.DomainInfo('lover'))
-    print(main.DomainInfo('as'))
+    print(auth.DomainInfo('fucker'))
+    print(auth.DomainInfo('lover'))
+    print(auth.DomainInfo('as'))
 
 def settype():
-    main.SetType('pornhub','video')
-    main.SetType('wo.txt','document')
-    main.SetType('cs419','document')
-    main.SetType('cs352','document')
-    main.SetType('movei','video')
-    main.SetType('hhh','funny')
-    main.SetType('cs520','document')
-    main.SetType('football','sport')
+    auth.SetType('pornhub', 'video')
+    auth.SetType('wo.txt', 'document')
+    auth.SetType('cs419', 'document')
+    auth.SetType('cs352', 'document')
+    auth.SetType('movei', 'video')
+    auth.SetType('hhh', 'funny')
+    auth.SetType('cs520', 'document')
+    auth.SetType('football', 'sport')
 
 def tyinfo():
-    print(main.Typeinfo('video'))
-    print(main.Typeinfo('document'))
+    print(auth.Typeinfo('video'))
+    print(auth.Typeinfo('document'))
 
 def setaccess():
-    main.addaccess('read','fucker','document')
-    main.addaccess('watch','fucker','video')
-    main.addaccess('doing','fucker','sport')
-    main.addaccess('read','lover','document')
+    auth.addaccess('read', 'fucker', 'document')
+    auth.addaccess('watch', 'fucker', 'video')
+    auth.addaccess('doing', 'fucker', 'sport')
+    auth.addaccess('read', 'lover', 'document')
 
 def checkaccess():
-    print(main.canaccess('watch','peter','pornhub'))
-    print(main.canaccess('doing', 'muggle', 'football'))
+    print(auth.canaccess('watch', 'peter', 'pornhub'))
+    print(auth.canaccess('doing', 'muggle', 'football'))
 
 
 
 #adduser()
 print("-----------")
-secur()
+#secur()
 print("-----------")
-setdomain()
+#setdomain()
 print("-----------")
 #doinfo()
 print("-----------")
 #print(main.canaccess('rival', 'france', 'usa'))
-settype()
+#settype()
 print("-----------")
 #tyinfo()
-setaccess()
-conn.close()
+#setaccess()
+#conn.close()
